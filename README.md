@@ -1,9 +1,9 @@
-# mcp-hub
+# mcp-get
 
 The package manager for MCP servers — install and configure in one command.
 
 ```bash
-pip install mcp-hub
+pip install mcp-get
 mcp install filesystem
 mcp install github
 mcp install playwright
@@ -19,14 +19,14 @@ No more manually editing JSON config files.
 
 **The problem:** installing an MCP server currently means finding the package, figuring out the right args, and manually editing a JSON config file for each AI client you use.
 
-**mcp-hub fixes this.**
+**mcp-get fixes this.**
 
 ---
 
 ## Installation
 
 ```bash
-pip install mcp-hub
+pip install mcp-get
 ```
 
 ## Quick start
@@ -35,7 +35,7 @@ pip install mcp-hub
 # See what's available
 mcp search
 
-# Install a server (auto-detects Claude Desktop, Cursor, Windsurf)
+# Install a server (auto-detects Claude Desktop, Cursor, Windsurf, VS Code...)
 mcp install filesystem
 mcp install github
 mcp install postgres
@@ -62,8 +62,18 @@ Installs a server and writes it to all detected AI client configs.
 mcp install filesystem          # prompts for allowed path
 mcp install github              # shows required env vars
 mcp install postgres            # prompts for connection string
-mcp install cursor --client cursor   # target a specific client only
 mcp install memory --yes        # skip all confirmation prompts
+mcp install filesystem --client cursor   # target a specific client only
+```
+
+### `mcp add <name>`
+
+Add any custom MCP server not in the registry.
+
+```bash
+mcp add my-server --command npx --args "-y,my-npm-package"
+mcp add local-tool --command python --args "/path/to/server.py"
+mcp add api-tool --command node --args "/path/to/index.js" --env API_TOKEN
 ```
 
 ### `mcp uninstall <name>`
@@ -113,7 +123,7 @@ mcp clients
 
 ---
 
-## Supported servers (25+)
+## Supported servers (26)
 
 | Server | Description | Auth |
 |--------|-------------|------|
@@ -142,6 +152,7 @@ mcp clients
 | `stripe` | Stripe payments and customers | Key |
 | `sequential-thinking` | Structured reasoning | No |
 | `aws-kb` | AWS Bedrock Knowledge Base RAG | Keys |
+| `everart` | AI image generation | Key |
 
 ---
 
@@ -159,18 +170,18 @@ mcp clients
 | **Continue** | YAML | `~/.continue/config.yaml` |
 | **Goose** | YAML | `~/.config/goose/config.yaml` |
 
-mcp-hub auto-detects which clients are installed and writes to all of them.
+mcp-get auto-detects which clients are installed and writes to all of them.
 
 Continue and Goose require pyyaml:
 ```bash
-pip install "mcp-hub[yaml]"
+pip install "mcp-get[yaml]"
 ```
 
 ---
 
 ## How it works
 
-mcp-hub **only writes JSON config files** — it does not install packages directly. Servers are started lazily by your AI client using `npx -y` (Node.js) or `uvx` (Python), which handle downloading automatically.
+mcp-get **only writes JSON/YAML config files** — it does not install packages directly. Servers are started lazily by your AI client using `npx -y` (Node.js) or `uvx` (Python), which handle downloading automatically.
 
 This means:
 - `mcp install` is near-instant — no network calls
